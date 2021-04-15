@@ -90,9 +90,10 @@ class agent:
 
         self.rgbcam_time = data.timestamp
         self.rgbcam_data = data
-
+        
         for c in self.rgbcam_callbacks:
             c(data)
+
 
     # Register a function to be called when gnss data is received
     def rgbcam_reg_callback(self, callback):
@@ -147,3 +148,11 @@ class agent:
         for a in self.actor_list:
             a.destroy()
             self.actor_list.remove(a)
+
+def get_img_from_data(data):
+    array = np.frombuffer(data.raw_data, dtype=np.dtype("uint8"))
+    array = np.reshape(array, (data.height, data.width, 4))
+    array = array[:, :, :3]
+    array = array[:, :, ::-1]
+    
+    return array.copy()
